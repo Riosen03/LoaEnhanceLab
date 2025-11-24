@@ -118,3 +118,4 @@
 
 # DB 설계
 
+![Alt text](/DB_ERD.png)
