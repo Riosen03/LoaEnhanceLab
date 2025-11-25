@@ -113,9 +113,18 @@
 * 상급 재련 책: 총 8종
 
 ※ 상급 재련 3·4단계 책은 이벤트 전용이므로
-**시장 구매 불가 → 가격 무한대로 처리**하여 모델링.
+**시장 구매 불가 → index 시작 위치 미래로 처리**하여 모델링.
 
 
 # DB 설계
 
 ![Alt text](/DB_ERD.png)
+
+
+# DB 구축
+
+* init.py를 통해 enhance.db 생성
+
+# 기초 데이터 입력
+
+* 필요한 기반 정보를 DB에 미리 입력(insert_seed_data.py, insert_seed_data_from_excel.py)
