@@ -125,6 +125,9 @@
 
 * init.py를 통해 enhance.db 생성
 
-# 기초 데이터 입력
+# 기초 데이터 입력_1단계
 
-* 필요한 기반 정보를 DB에 미리 입력(insert_seed_data.py, insert_seed_data_from_excel.py)
+* 시세 데이터를 저장하기 위해 필요한 기반 정보를 DB에 미리 입력(insert_seed_data.py)
+
+# 시세 데이터 수집
+
