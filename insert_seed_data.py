@@ -119,7 +119,10 @@ def seed_enhance_type(db_path=DB_PATH):
     conn.commit()
     conn.close()
 
-if __name__ == "__main__":
+def insert_seed_data() :
     seed_item_category()
     seed_items()
     seed_enhance_type()
+
+if __name__ == "__main__":
+    insert_seed_data()

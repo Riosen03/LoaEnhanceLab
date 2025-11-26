@@ -8,36 +8,6 @@ DB_PATH = "enhance.db"
 BASE_INDEX = 17206146           # (2024/7/10 12:30)
 UPDATE_INDEX = 17496363         # (2025/6/11 10:05)
 
-items = [
-    (1101, "운명의 파괴석", 2, 17206146),
-    (1201, "운명의 수호석", 2, 17206146),
-    (1011, "운명의 돌파석", 1, 17206146),
-    (1021, "아비도스 융화 재료", 1, 17206146),
-    (1031, "운명의 파편 주머니(소)", 3, 17206890),
-    (1032, "운명의 파편 주머니(중)", 4, 17273346),
-    (1033, "운명의 파편 주머니(대)", 5, 17376162),
-    (2101, "용암의 숨결", 1, 17206890),
-    (2201, "빙하의 숨결", 1, 17206890),
-#    (1000, "골드", 1, 17206146),
-
-    (3101, "야금술 : 업화 [11-14]", 1, 17273202),
-    (3102, "야금술 : 업화 [15-18]", 1, 17466126),
-    (3103, "야금술 : 업화 [19-20]", 1, 17569071),
-    (3201, "재봉술 : 업화 [11-14]", 1, 17273049),
-    (3202, "재봉술 : 업화 [15-18]", 1, 17466126),
-    (3203, "재봉술 : 업화 [19-20]", 1, 17569038),
-
-    (4101, "장인의 야금술 : 1단계", 1, 17375868),
-    (4102, "장인의 야금술 : 2단계", 1, 17375874),
-    (4103, "장인의 야금술 : 3단계", 1, 20000000),
-    (4104, "장인의 야금술 : 4단계", 1, 20000000),
-
-    (4201, "장인의 재봉술 : 1단계", 1, 17375859),
-    (4202, "장인의 재봉술 : 2단계", 1, 17375874),
-    (4203, "장인의 재봉술 : 3단계", 1, 20000000),
-    (4204, "장인의 재봉술 : 4단계", 1, 20000000)
-]
-
 
 def get_history(item) :
     encoded_name = urllib.parse.quote_plus(item[1])
@@ -74,7 +44,20 @@ def insert_history(conn, item, history) :
 
     for history_index, price in history:
         raw_price = int(price)
-        unit_price = float(price)
+        if item[2] == 1 :
+            unit_price = float(price)
+        elif item[2] == 2 :
+            if history_index < UPDATE_INDEX :
+                unit_price = float(price)/10
+            else :
+                unit_price = float(price)/100
+        elif item[2] == 3 :
+            unit_price = float(price)/1000
+        elif item[2] == 4 :
+            unit_price = float(price)/2000
+        elif item[2] == 5 :
+            unit_price = float(price)/3000
+
 
         cur.execute(
             """
@@ -87,11 +70,19 @@ def insert_history(conn, item, history) :
     conn.commit()
 
 
-def collect_all() :
+def fetch_history_data() :
     conn = sqlite3.connect(DB_PATH)
     conn.execute("PRAGMA foreign_keys = ON;")
     cur = conn.cursor()
+    
     cur.execute("DELETE FROM PriceHistoryData;")
+
+    cur.execute("""
+        SELECT item_id, item_name, category_id, item_first_index
+        FROM Items
+        ORDER BY item_id ASC
+    """)
+    items = cur.fetchall()
 
     for item in items :
         try:
@@ -102,10 +93,12 @@ def collect_all() :
     
         insert_history(conn, item, history)
 
-        print(f"[Success] {item[1]}: 공백(price < 0) 포함 {len(history)}개 데이터 저장 완료")
+        print(f"[Success] {item[1]}: 공백(price <= 0) 포함 {len(history)}개 데이터 저장 완료")
 
         time.sleep(0.3)
+
+    conn.close()
     
 
 if __name__ == "__main__":
-    collect_all()
+    fetch_history_data()
