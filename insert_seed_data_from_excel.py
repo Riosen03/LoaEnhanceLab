@@ -8,16 +8,14 @@ BASE_INDEX = 17206146
 BASE_DATETIME = datetime(2024, 7, 10, 12, 30, 0)
 
 # ===== 아이템 ID =====
-STONE_WEAPON = 1101      # 운명의 파괴석
-STONE_ARMOR  = 1201      # 운명의 수호석
+WEAPON_STONE = 1101      # 운명의 파괴석
+ARMOR_STONE  = 1201      # 운명의 수호석
 BREAK_STONE  = 1011      # 운명의 돌파석
 FUSION_STONE = 1021      # 아비도스 융화 재료
-POUCH_S      = 1031      # 운명의 파편 주머니(소)  
-POUCH_M      = 1032      # 운명의 파편 주머니(중)  
-POUCH_L      = 1033      # 운명의 파편 주머니(대)  
+FRAGMENT     = 1030      # 운명의 파편
 BREATH_FIRE  = 2101      # 용암의 숨결 (무기)
 BREATH_ICE   = 2201      # 빙하의 숨결 (방어구)
-#GOLD         = 1000      # 골드 ~ 시세X
+GOLD         = 1000      # 골드 ~ 시세X
 
 BOOK_N_W_11_14 = 3101    # 야금술 : 업화 [11-14]
 BOOK_N_W_15_18 = 3102    # 야금술 : 업화 [15-18]
