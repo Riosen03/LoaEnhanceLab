@@ -8,7 +8,6 @@ DB_PATH = "enhance.db"
 BASE_INDEX = 17206146           # (2024/7/10 12:30)
 UPDATE_INDEX = 17496363         # (2025/6/11 10:05)
 
-
 def get_history(item) :
     encoded_name = urllib.parse.quote_plus(item[1])
     url = f"{base_url}{encoded_name}"
@@ -51,12 +50,14 @@ def insert_history(conn, item, history) :
                 unit_price = float(price)/10
             else :
                 unit_price = float(price)/100
-        elif item[2] == 3 :
-            unit_price = float(price)/1000
-        elif item[2] == 4 :
-            unit_price = float(price)/2000
-        elif item[2] == 5 :
-            unit_price = float(price)/3000
+        else :
+            if item[2] == 3 :
+                unit_price = float(price)/1000
+            elif item[2] == 4 :
+                unit_price = float(price)/2000
+            elif item[2] == 5 :
+                unit_price = float(price)/3000
+            
 
 
         cur.execute(
@@ -93,7 +94,7 @@ def fetch_history_data() :
     
         insert_history(conn, item, history)
 
-        print(f"[Success] {item[1]}: 공백(price <= 0) 포함 {len(history)}개 데이터 저장 완료")
+        print(f"[Success] {item[1]} - 공백(price <= 0) 포함 {len(history)}개 데이터 저장 완료")
 
         time.sleep(0.3)
 

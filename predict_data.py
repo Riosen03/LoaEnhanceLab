@@ -41,12 +41,6 @@ def load_item_history(conn, item_id):
 
 
 
-
-
-
-
-
-
 def predict_data() :
     conn = sqlite3.connect(DB_PATH)
     conn.execute("PRAGMA foreign_keys = ON;")
