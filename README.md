@@ -137,9 +137,9 @@
 
 * 입력된 데이터를 기반으로 Pouch류의 unit 가격 후 해당 pouch 기반으로 기초 데이터 입력(get_fragment_unit_price.py)
 
-# 기초 데이터 입력_3단계(미완)
+# 기초 데이터 입력_3단계
 
-* excel로부터 강화 관련 데이터를 받아서 DB에 입력
+* excel로부터 강화 관련 데이터를 받아서 DB에 입력(insert_seed_data_from_excel.py)
 
 # 시세 예측
 
