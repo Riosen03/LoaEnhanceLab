@@ -29,3 +29,9 @@ BOOK_A_W = {1: 4101, 2: 4102, 3: 4103, 4: 4104}  # 장인의 야금술
 BOOK_A_A = {1: 4201, 2: 4202, 3: 4203, 4: 4204}  # 장인의 재봉술
 
 
+
+def seed_from_excel() :
+    abc = 1
+
+if __name__ == "__main__":
+    seed_from_excel()
