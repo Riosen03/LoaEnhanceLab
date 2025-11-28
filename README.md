@@ -120,24 +120,27 @@
 
 ![Alt text](/DB_ERD.png)
 
+# DB 및 기반 data
 
-# DB 구축
+* build_DB.py로 일괄실행
+
+## DB 구축
 
 * init.py를 통해 enhance.db 생성
 
-# 기초 데이터 입력_1단계
+## 기초 데이터 입력_1단계
 
 * 시세 데이터를 저장하기 위해 필요한 기반 정보를 DB에 미리 입력(insert_seed_data.py)
 
-# 시세 데이터 수집
+## 시세 데이터 수집
 
 * 로아차트의 API로부터 시세 data 가져오기(fetch_history_data.py)
 
-# 기초 데이터 입력_2단계
+## 기초 데이터 입력_2단계
 
 * 입력된 데이터를 기반으로 Pouch류의 unit 가격 후 해당 pouch 기반으로 기초 데이터 입력(get_fragment_unit_price.py)
 
-# 기초 데이터 입력_3단계
+## 기초 데이터 입력_3단계
 
 * excel로부터 강화 관련 데이터를 받아서 DB에 입력(insert_seed_data_from_excel.py)
 
