@@ -38,15 +38,19 @@ statsmodels.tsa.holtwinters
 
 ### Demo(실행예시화면)
 * build_DB 실행
+
 ![Alt text](/image/DB_build.png)
 
 * main 실행 화면
+
 ![Alt text](/image/main_predict.png)
 
 * 재료 시세 예측 그래프
+
 ![Alt text](/image/pre_gragh.png)
 
 * 1회 최소 비용 계산 예시
+
 ![Alt text](/image/mincost.png)
 
 # 프로젝트 진행 순서 리스트(목표)
@@ -195,14 +199,14 @@ statsmodels.tsa.holtwinters
 1. STL 분해
 STL(STL Decomposition)을 통해 시계열 데이터를 아래 세 성분으로 분해한다.
 
-> Trend (추세)
-장기적으로 상승/하락하는 방향을 반영
+> Trend (추세)   
+> 장기적으로 상승/하락하는 방향을 반영
 
-> Seasonal (계절성)
-하루 단위(5분 단위 기준 288개의 point)로 반복되는 “요일/시간대” 패턴을 반영
+> Seasonal (계절성)   
+> 하루 단위(5분 단위 기준 288개의 point)로 반복되는 “요일/시간대” 패턴을 반영
 
-> Residual (잔차)
-급등락 등의 단기 변동을 노이즈로 분리
+> Residual (잔차)   
+> 급등락 등의 단기 변동을 노이즈로 분리
 
 반복 패턴(요일/시간대) + 장기 추세를 정확하게 분리하여 예측하기 쉬운 형태로 형성
 
