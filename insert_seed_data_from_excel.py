@@ -298,5 +298,7 @@ def seed_from_excel() :
     conn.commit()
     conn.close()
 
+    print("엑셀 데이터 로드 및 강화데이터 저장 완료(enhancestage/cost)")
+
 if __name__ == "__main__":
     seed_from_excel()

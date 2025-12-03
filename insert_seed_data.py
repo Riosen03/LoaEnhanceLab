@@ -124,6 +124,7 @@ def insert_seed_data() :
     seed_item_category()
     seed_items()
     seed_enhance_type()
+    print("Item 데이터 저장 완료")
 
 if __name__ == "__main__":
     insert_seed_data()

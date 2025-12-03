@@ -60,7 +60,7 @@ def get_fragment_unit_price() :
             """,
             (ITEM_ID, history_index, raw_price, unit_price)
         )
-    print(f"[Success] 공백(price <= 0) 포함 {len(frag_min_history)}개 데이터 저장 완료")
+    print(f"[Success] 운명의 파편 - 공백(price <= 0) 포함 {len(frag_min_history)}개 데이터 저장 완료")
     conn.commit()
     conn.close()
 

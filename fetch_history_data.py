@@ -8,6 +8,7 @@ DB_PATH = "enhance.db"
 BASE_INDEX = 17206146           # (2024/7/10 12:30)
 UPDATE_INDEX = 17496363         # (2025/6/11 10:05)
 
+
 def get_history(item) :
     encoded_name = urllib.parse.quote_plus(item[1])
     url = f"{base_url}{encoded_name}"
@@ -77,6 +78,7 @@ def fetch_history_data() :
     cur = conn.cursor()
     
     cur.execute("DELETE FROM PriceHistoryData;")
+    print("기존 시세 데이터 삭제 완료")
 
     cur.execute("""
         SELECT item_id, item_name, category_id, item_first_index
@@ -86,10 +88,14 @@ def fetch_history_data() :
     items = cur.fetchall()
 
     for item in items :
+        if item[0] == 1000 or item[0] == 1030 or item[0] == 4103 or item[0] == 4104 or item[0] == 4203 or item[0] == 4204 :
+            continue
+        
         try:
             history = get_history(item)
         except Exception as e:
-            print(f"[Failure] {item[1]} 수집 실패(History 없음) → {e}")
+
+            print(f"[Failure] {item[1]} 수집 실패 → {e}")
             continue
     
         insert_history(conn, item, history)

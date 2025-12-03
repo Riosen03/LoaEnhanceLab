@@ -86,11 +86,17 @@ def init_db(db_path: str = DB_PATH) -> None:
                 ON UPDATE CASCADE
                 ON DELETE CASCADE
         );
+
+        -- 인덱스
+        CREATE INDEX IF NOT EXISTS idx_price_item ON PriceHistoryData(item_id);
+        CREATE INDEX IF NOT EXISTS idx_price_index ON PriceHistoryData(history_index);
         """
     )
 
     conn.commit()
     conn.close()
+
+    print("DB 및 Entity 생성 완료")
 
 
 if __name__ == "__main__":
