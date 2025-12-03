@@ -129,7 +129,7 @@ def plot_item_history_and_forecast(item_id: int):
     plt.tight_layout()
     plt.show()
 
-    print(f"[OK] item_id={item_id}: 최근 2주 + 예측 그래프 출력 완료")
+    print(f"[Success] item_id={item_id}: 최근 2주 + 예측 그래프 출력 완료")
 
 if __name__ == "__main__":
     target_item = int(input("item_id 입력: "))

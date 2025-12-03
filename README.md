@@ -17,6 +17,37 @@
 > [로아차트](https://loachart.com/chart) - API 및 시세 정보   
 [아이스펭](https://loa.icepeng.com/) - 강화 필요 재료 소모량 data
 
+# 사용&Demo
+### 사용 방법
+1. build_DB.py 실행
+2. main.py 실행
+
+* 사용하는 python 패키지
+> sqlite3
+requests
+math
+time
+pandas
+numpy
+datetime
+warnings
+urllib.parse
+matplotlib.pyplot
+statsmodels.tsa.seasonal
+statsmodels.tsa.holtwinters
+
+### Demo(실행예시화면)
+* build_DB 실행
+![Alt text](/image/DB_build.png)
+
+* main 실행 화면
+![Alt text](/image/main_predict.png)
+
+* 재료 시세 예측 그래프
+![Alt text](/image/pre_gragh.png)
+
+* 1회 최소 비용 계산 예시
+![Alt text](/image/mincost.png)
 
 # 프로젝트 진행 순서 리스트(목표)
 
@@ -66,7 +97,7 @@
 
 로스트아크 강화 구조는 아래와 같음
 
-## 1. 일반 재련 (10 → 25강)
+### 1. 일반 재련 (10 → 25강)
 
 * 단계별로 필요한 재료가 다름
 * 무기: 파괴석 / 돌파석 / 융화 / 파편 / 숨결(용암)
@@ -76,7 +107,7 @@
 * 장인의 기운 100% 도달 시 다음 시도 확정 성공
 * 책(t)은 추가 확률 제공, 책(f)은 사용 불가
 
-## 2. 상급 재련 (담금질 1~4)
+### 2. 상급 재련 (담금질 1~4)
 
 * 각 구간을 “담금질 단계”로 모델링
 * 한 담금질 구간은 0~10칸 상승
@@ -84,7 +115,7 @@
 * 무기/방어구는 각각 다른 재료 사용
 * 책은 구간별로 t(사용 가능)/f(사용 불가)/e(이벤트전용)
 
-## 3. 비용 모델 기준
+### 3. 비용 모델 기준
 
 * **골드**만 비용으로 계산 (별도 재화인 실링은 고려X)
 * 기대값 구조 : “재료 × 시세 + 강화 수수료 골드”의 “강화 1회 비용 × 기대 시도 횟수 → 누적 비용” 방식
@@ -112,40 +143,107 @@
 * 일반 재련 책: 총 6종
 * 상급 재련 책: 총 8종
 
-※ 상급 재련 3·4단계 책은 이벤트 전용이므로
-**시장 구매 불가 → index 시작 위치 미래로 처리**하여 모델링.
+※ 상급 재련 3·4단계 책은 이벤트 전용이므로 시장 구매 불가 → index 시작 위치 미래로 처리하여 모델링
 
+# DB 및 기반 데이터
 
-# DB 설계
+## DB 설계
 
-![Alt text](/DB_ERD.png)
+![Alt text](/image/DB_ERD.png)
 
-# DB 및 기반 data
+## DB 및 기반 data 생성
 
 * build_DB.py로 일괄실행
 
-## DB 구축
+### DB 구축
 
 * init.py를 통해 enhance.db 생성
+* Entity table 구조는 ERD와 거의 유사
 
-## 기초 데이터 입력_1단계
+### 기초 데이터 입력&시세 데이터 수집
 
-* 시세 데이터를 저장하기 위해 필요한 기반 정보를 DB에 미리 입력(insert_seed_data.py)
+* 시세 데이터를 저장하기 위해 필요한 기반 정보를 DB에 미리 입력
+    - insert_seed_data.py
+    - Itemcategory, Items, EnhanceType 입력
 
-## 시세 데이터 수집
+* 로아차트의 API로부터 시세 data 가져오기
+    - fetch_history_data.py
+    - PriceHistoryData 입력
+    - index +3 ↔ 5분 (INDEX_STEP = 3, MINUTES_STEP = 5)
+    - 점검 등으로 인한 결측값은 0으로 입력
 
-* 로아차트의 API로부터 시세 data 가져오기(fetch_history_data.py)
-
-## 기초 데이터 입력_2단계
-
-* 입력된 데이터를 기반으로 Pouch류의 unit 가격 후 해당 pouch 기반으로 기초 데이터 입력(get_fragment_unit_price.py)
-
-## 기초 데이터 입력_3단계
+* 입력된 데이터를 기반으로 fragment의 당시 최소가 계산&저장
+    - get_fragment_unit_price.py
+    - 입력된 pouch류 3개의 unit_price 최소값 비교 후 fragment의 값으로 저장(실제단가)
 
 * excel로부터 강화 관련 데이터를 받아서 DB에 입력(insert_seed_data_from_excel.py)
 
-# 시세 예측
+# 시세 예측 모델 생성 및 최종 main 코드 작성
+* main.py로 일괄 실행 가능
 
-* 
+## 예측 모델
+* predict_data.py로 예측
+* predict_graph.py, predict_mincost로 예측 데이터 가시화
 
+### 1. 예측 이전 고려 사항
+* index +3 ↔ 5분 (INDEX_STEP = 3, MINUTES_STEP = 5), 최종 결과는 정확한 일시로 출력 
+* 결측값은 0으로 저장, 해당 부분은 선형보간 적용
 
+### 2. 예측 모델
+* STL + Holt-Winters 결합 모델 사용
+
+1. STL 분해
+STL(STL Decomposition)을 통해 시계열 데이터를 아래 세 성분으로 분해한다.
+
+> Trend (추세)
+장기적으로 상승/하락하는 방향을 반영
+
+> Seasonal (계절성)
+하루 단위(5분 단위 기준 288개의 point)로 반복되는 “요일/시간대” 패턴을 반영
+
+> Residual (잔차)
+급등락 등의 단기 변동을 노이즈로 분리
+
+반복 패턴(요일/시간대) + 장기 추세를 정확하게 분리하여 예측하기 쉬운 형태로 형성
+
+2. Holt-Winters (지수평활 기반 예측)
+STL로 분리된 성분 중 Trend + Seasonal로 두개의 성분을 합쳐 부드러운 시계열을 만든 뒤
+> Additive Trend
+Additive Seasonality (period=288)
+
+Holt-Winters(Exponential Smoothing) 모델로 1주일 미래의 시세를 예측한다.
+> 5분 단위 미래 예측(2016 step = 7일 × 24시간 × 12번(60분))
+
+### 3. 예측 상세 과정
+
+1. PriceHistoryData에서 해당 재료의 전체 시세를 불러옴
+2. 정해진 한계선의 날짜/포인트까지만 사용하여 연산량 최적화
+3. 0/음수/결측값을 정제 후 보간
+4. STL로 trend/seasonal/residual 분해
+5. Seasonal + Trend를 Holt-Winters 모델로 학습
+6. 향후 1주일(2016 step) 예측값 산출
+7. 예측 결과는 PricePredictData에 저장
+
+### 4. 예측 결과
+* history와 같은 구조로 생성(index, item id, raw price, unit price)
+* unit_price는 예측값 그대로 저장, raw_price는 묶음단위 * 단가 를 반올림
+* 각 재료별로 총 2016개 저장
+* 시세 그래프는 2주 분량 과거 시세(blue) + 1주 분량 예측 시세(orange)로 생성(예시는 demo에 포함)
+
+### 5. 예측 모델 장점 및 개선점
+1. 장점
+* STL이 시세의 시간대/요일별 패턴을 자동으로 추출
+* Holt-Winters가 추세를 부드럽게 예측
+* 단순 선형 회귀에 비해 훨씬 현실적인 시세 변동
+* 급락/폭주 같은 현상이 거의 없음
+* 강화 비용 최소 시간 계산 시 유효한 최저 비용 시점이 중간에 등장
+
+2. 개선 요구점(단점)
+* 시세 급변(패치/이벤트)에 대한 반응은 예측에 반영 안됨
+* 하루 단위 변화는 유의미하나 전체적으로는 선형으로 예측되는 문제점 해결 필요
+
+# 개선 및 확장 방향
+* 데이터 예측 모델을 더 유동성 있게 변경
+* GUI, 웹 등으로 확장
+* 로아차트API가 아닌 실제 Lostark open API에서 실시간으로 시세 수집
+* 강화 전체 비용 계산 등 아이스펭 기능으로 확장

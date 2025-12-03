@@ -93,10 +93,6 @@ def load_predicted_series(conn, item_id: int) -> pd.DataFrame:
 
 
 def compute_stage_cost_timeseries(conn, stage_id: int) -> pd.DataFrame | None:
-    """
-    각 predict_index마다 '강화 1회 비용'을 계산한 시계열 DF를 리턴.
-    columns: ["predict_index", "total_cost"]
-    """
     cost_items = load_stage_cost_items(conn, stage_id)
     if not cost_items:
         print(f"[WARN] stage_id={stage_id} : EnhanceCost 없음")
@@ -105,7 +101,7 @@ def compute_stage_cost_timeseries(conn, stage_id: int) -> pd.DataFrame | None:
     pred_dfs = []
     gold_qty = 0
 
-    # 예측 시리즈
+    # 예측
     for item_id, qty in cost_items:
         if item_id == GOLD:
             gold_qty += qty
@@ -125,16 +121,12 @@ def compute_stage_cost_timeseries(conn, stage_id: int) -> pd.DataFrame | None:
         print("[WARN] 예측 대상 재료 없음")
         return None
 
-    # 공통 predict_index 구간 만들기 (inner join)
-    base_df = pred_dfs[0][["predict_index", "predict_unit_price"]].rename(
-        columns={"predict_unit_price": f"price_{pred_dfs[0]['item_id'].iloc[0]}"}
-    )
+    # 공통 predict_index 구간 만들기(inner join)
+    base_df = pred_dfs[0][["predict_index", "predict_unit_price"]].rename(columns={"predict_unit_price": f"price_{pred_dfs[0]['item_id'].iloc[0]}"})
 
     for df in pred_dfs[1:]:
         item_id = df["item_id"].iloc[0]
-        tmp = df[["predict_index", "predict_unit_price"]].rename(
-            columns={"predict_unit_price": f"price_{item_id}"}
-        )
+        tmp = df[["predict_index", "predict_unit_price"]].rename(columns={"predict_unit_price": f"price_{item_id}"})
         base_df = base_df.merge(tmp, on="predict_index", how="inner")
 
     if base_df.empty:
@@ -146,7 +138,7 @@ def compute_stage_cost_timeseries(conn, stage_id: int) -> pd.DataFrame | None:
 
     for item_id, qty in cost_items:
         if item_id == GOLD:
-            total_cost += qty * 1  # 골드는 unit 1로 취급
+            total_cost += qty * 1  # 골드는 unit price 1로 취급
         else:
             col_name = f"price_{item_id}"
             total_cost += qty * base_df[col_name].values

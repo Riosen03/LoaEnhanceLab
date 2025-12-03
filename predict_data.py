@@ -192,7 +192,7 @@ def predict_item(item_id: int, use_last_n: int | None = None):
 
     conn.commit()
     conn.close()
-    print(f"[OK] item_id={item_id}: STL-HoltWinter 1주일 예측 {len(rows)}개 저장 완료")
+    print(f"[Success] item_id={item_id}: 1주일 예측 {len(rows)}개 저장 완료")
 
 
 def predict_all_items(use_last_n: int | None = None):
